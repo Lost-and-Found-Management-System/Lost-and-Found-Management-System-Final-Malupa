@@ -1,0 +1,27 @@
+<!-- registration.html -->
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>User Registration</title>
+</head>
+<body>
+    <h2>Register User</h2>
+    <form id="registrationForm" action="register.php" method="post">
+        Full Name: <input type="text" name="full_name" required><br>
+        Username: <input type="text" name="username" required><br>
+        Password: <input type="password" name="password" required><br>
+        Role:
+        <select name="role" required>
+            <option value="admin">Admin</option>
+            <option value="security">Security</option>
+        </select><br>
+        <input type="submit" value="Register">
+    </form>
+
+    <script>
+        // You can add client-side validation or other functionalities here.
+    </script>
+</body>
+</html>
