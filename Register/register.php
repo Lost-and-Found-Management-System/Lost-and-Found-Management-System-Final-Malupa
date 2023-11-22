@@ -1,38 +1,37 @@
 <?php
-// Assuming you have a database connection
-$servername = "localhost";
-$username = "root";
-$password = "";
+// Replace these with your actual database credentials
+$host = "localhost";
 $dbname = "db_nt3102";
+$user = "root";
+$password = "";
 
-$conn = new mysqli($servername, $username, $password, $dbname);
-
-if ($conn->connect_error) {
-    die("Connection failed: " . $conn->connect_error);
+try {
+    // Create a PDO connection
+    $pdo = new PDO("mysql:host=$host;dbname=$dbname", $user, $password);
+    // Set the PDO error mode to exception
+    $pdo->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
+} catch (PDOException $e) {
+    die("Connection failed: " . $e->getMessage());
 }
 
-// Retrieve data from the form
-$lastname = $_POST['lastname'];
-$firstname = $_POST['firstname'];
-$department = $_POST['department'];
-$username = $_POST['username'];
-$password = $_POST['password'];
-$usersign = $_POST['usersign'];
+if ($_SERVER["REQUEST_METHOD"] == "POST") {
+    $username = $_POST["username"];
+    $password = $_POST["password"];
+    $role = $_POST["role"];
+    $usersign = $_POST["usersign"];
 
-// Insert into tbemployee table
-$sql = "INSERT INTO tbemployee (lastname, firstname, department) VALUES ('$lastname', '$firstname', '$department')";
-$conn->query($sql);
+    // Perform basic validation
+    if (empty($username) || empty($password) || empty($role) || empty($usersign)) {
+        echo "All fields are required.";
+        exit();
+    }
 
-// Retrieve the generated empid
-$last_empid = $conn->insert_id;
+    // Perform SQL insertion
+    $sql = "INSERT INTO security (username, password, role, usersign) VALUES (?, ?, ?, ?)";
+    $stmt = $pdo->prepare($sql);
+    $hashedPassword = password_hash($password, PASSWORD_DEFAULT);
+    $stmt->execute([$username, $hashedPassword, $role, $usersign]);
 
-// Insert into security table with the generated empid
-$sql = "INSERT INTO security (username, password, role, usersign, empid) VALUES ('$username', '$password', 'security', '$usersign', '$last_empid')";
-if ($conn->query($sql) === TRUE) {
-    echo "User registered successfully!";
-} else {
-    echo "Error: " . $sql . "<br>" . $conn->error;
+    echo "Registration successful!";
 }
-
-$conn->close();
 ?>
