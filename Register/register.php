@@ -1,9 +1,9 @@
 <?php
 // Replace these with your actual database credentials
-$host = "your_host";
-$dbname = "your_database";
-$user = "your_username";
-$password = "your_password";
+$host = "localhost";
+$dbname = "db_nt3102";
+$user = "root";
+$password = "";
 
 try {
     // Create a PDO connection
