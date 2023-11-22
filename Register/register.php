@@ -1,9 +1,9 @@
 <?php
 // Replace these with your actual database credentials
-$host = "localhost";
-$dbname = "db_nt3102";
-$user = "root";
-$password = "";
+$host = "your_host";
+$dbname = "your_database";
+$user = "your_username";
+$password = "your_password";
 
 try {
     // Create a PDO connection
@@ -15,22 +15,31 @@ try {
 }
 
 if ($_SERVER["REQUEST_METHOD"] == "POST") {
+    $empid = $_POST["empid"];
     $username = $_POST["username"];
     $password = $_POST["password"];
     $role = $_POST["role"];
     $usersign = $_POST["usersign"];
+    $lastname = $_POST["lastname"];
+    $firstname = $_POST["firstname"];
+    $department = $_POST["department"];
 
     // Perform basic validation
-    if (empty($username) || empty($password) || empty($role) || empty($usersign)) {
+    if (empty($empid) || empty($username) || empty($password) || empty($role) || empty($usersign) || empty($lastname) || empty($firstname) || empty($department)) {
         echo "All fields are required.";
         exit();
     }
 
-    // Perform SQL insertion
-    $sql = "INSERT INTO security (username, password, role, usersign) VALUES (?, ?, ?, ?)";
-    $stmt = $pdo->prepare($sql);
+    // Perform SQL insertion into tbemployee
+    $sqlEmployee = "INSERT INTO tbemployee (empid, lastname, firstname, department) VALUES (?, ?, ?, ?)";
+    $stmtEmployee = $pdo->prepare($sqlEmployee);
+    $stmtEmployee->execute([$empid, $lastname, $firstname, $department]);
+
+    // Perform SQL insertion into security
+    $sqlSecurity = "INSERT INTO security (UserId, username, password, role, usersign) VALUES (?, ?, ?, ?, ?)";
+    $stmtSecurity = $pdo->prepare($sqlSecurity);
     $hashedPassword = password_hash($password, PASSWORD_DEFAULT);
-    $stmt->execute([$username, $hashedPassword, $role, $usersign]);
+    $stmtSecurity->execute([$empid, $username, $hashedPassword, $role, $usersign]);
 
     echo "Registration successful!";
 }
